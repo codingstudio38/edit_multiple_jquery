@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Create Form Input Using JavaScript</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<style type="text/css">
+  input {
+  padding: 5px;
+  margin: 5px;
+}
+#total{
+text-align: center;
+}
+h3{
+font-weight: bold;
+background-color: #00c431;
+color: white;
+text-align: center;
+padding: 5px;
+}
+h4{
+font-weight: bold;
+background-color: #f88f08;
+color: white;
+text-align: center;
+line-height: inherit;
+}
+body{
+  background-color: #dae7ff;
+}
+</style>
+
+
+</head>
+ <body>
+<div class="container">
+
+<div class="col-sm-12">  
+<form action="index.html" method="post" autocomplete="off" style="margin-top:5%;">
+
+<table width="78%" align="center" border="0">
+   <tr>
+    <td align="center">
+       <h3>Insert Multiple Row Values Using jQuery</h3>
+       
+         <a href="index.php" class="btn btn-info" style="width: 120px; float:right;" >View Page</a>
+  <br/>
+    <br/>  
+   <h4 id="result"></h4>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+       <input type="text" placeholder="Number of inputs..." name="total" id="total" onchange="generateInputs(this.value)"  onkeypress="return isNumberKey(event)" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="2" required="" class="form-control" style="margin: 0px;">
+    </td>
+  </tr>
+
+  <tr>
+    <td id="all_inputs" align="center"></td>
+  </tr>
+
+  <tr>
+    <td align="center">
+       <button type="button" name="btn_upload" id="btn_upload" class="btn btn-primary btn-block" >Upload</button>
+    </td>
+  </tr>
+</table>
+
+</form>
+</div>
+
+
+</div>
+
+ </body>
+</html>
+
+<script>
+
+
+function generateInputs(val) {
+  total_no = val;
+  for (i = 0; total_no > i; i++) {
+    var reid = Math.floor(Math.random() * 999);
+    var element1 = document.createElement('input');
+    element1.type = "text";
+    element1.placeholder = "Video Title";
+    element1.name = "title[]";
+    element1.required = "true";
+    element1.id = "videoname_" + reid;
+    element1.className = "col-sm-3 col-form-label videoname";
+
+    var element2 = document.createElement('input');
+    element2.type = "text";
+    element2.placeholder = "Video Link";
+    element2.name = "link[]";
+    element2.required = "true";
+    element2.id = "link_" + reid;
+    element2.className = "col-sm-3 col-form-label link";
+
+    var element3 = document.createElement('input');
+    element3.type = "email";
+    element3.placeholder = "Email Id";
+    element3.name = "email[]";
+    element3.required = "true";
+    element3.id = "email_" + reid;
+    element3.className = "col-sm-3 col-form-label email";
+
+    var board = document.createElement('div');
+    board.appendChild(element1)
+    board.appendChild(element2)
+    board.appendChild(element3)
+    document.getElementById('all_inputs').appendChild(board);
+  }
+}
+
+
+
+
+function isNumberKey(evt)
+      {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+        return true;
+      }
+
+
+
+
+
+$('#btn_upload').click(function(){
+
+
+  var name = [];
+  $('.videoname').each(function(i){
+  if ((this.value) == "") { 
+    alert("Name is required"); 
+    $("#"+this.id).focus();exit;
+  }
+    name[i] = $(this).val();
+  });
+
+  var link = [];
+  $('.link').each(function(i){
+  if ((this.value) == "") { 
+    alert("Link is required"); 
+    $("#"+this.id).focus();exit;
+  }
+    link[i] = $(this).val();
+  });
+
+  var email = [];
+  valid_email =/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  $('.email').each(function(i){
+  if ((this.value) == "") { 
+    alert("Email is required"); 
+    $("#"+this.id).focus();exit;
+  } else if(!((this.value).match(valid_email))){
+    alert((this.value)+" is not a valid email id");
+    $("#"+this.id).focus();exit;
+   }
+    email[i] = $(this).val();
+  });
+
+ $.ajax({
+     url:'ajaxfile.php?type=insert',
+     method:'POST',
+     data:{names:name,links:link,emails:email},
+     success:function(response) {
+    $("#result").html(response);
+    $("#all_inputs").html("");
+    $('#total').val(null);
+    setTimeout(function(){ 
+      $("#result").html(""); }, 2000);
+     }
+    });
+ 
+
+});
+
+
+ 
+
+</script>
